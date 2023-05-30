@@ -1,0 +1,84 @@
+from graphics import Canvas
+import time
+import random
+    
+CANVAS_WIDTH = 400
+CANVAS_HEIGHT = 400
+SIZE = 20
+VELOCITY = 20
+STARTX = 0
+STARTY = 0
+
+# if you make this larger, the game will go slower
+DELAY = 0.2 
+
+def main():
+    # print game rules
+    print("The blue dot is your snake and the salmon dot is the goal.Use arrows on you keyboard to move the snake to eat the goal.")
+    
+    canvas = Canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
+    #goal x is a mutiplies of 20
+    left_x = SIZE*random.randint(0, (CANVAS_WIDTH-SIZE)/SIZE)
+    #goal y is a mutiplies of 20, too
+    top_y = SIZE*random.randint(0, (CANVAS_HEIGHT-SIZE)/SIZE)
+    goal = canvas.create_rectangle(left_x, top_y,left_x+SIZE, top_y+SIZE,"salmon")
+    
+    #draw snake
+    snake = canvas.create_rectangle(STARTX, STARTY, STARTX+SIZE, STARTY+SIZE, "blue")
+    
+    point = 0
+    text = canvas.create_text(40, 360, text='Point: '+str(point))
+    
+    # My attempt to keep the snake inside the canvas but it didn't work
+    #while 0 <= canvas.get_left_x(snake) <= CANVAS_WIDTH and 0 <= canvas.get_top_y(snake) <= CANVAS_HEIGHT:
+    
+    # Keep looping
+    while True:
+        key = canvas.get_last_key_press()
+        if key == 'ArrowLeft':
+            x = canvas.get_left_x(snake) - VELOCITY
+            y = canvas.get_top_y(snake) 
+            canvas.moveto(snake, x, y) 
+             # sleep
+            time.sleep(DELAY)
+        if key == 'ArrowRight':
+            x = canvas.get_left_x(snake) + VELOCITY
+            y = canvas.get_top_y(snake)
+            canvas.moveto(snake, x, y)
+             # sleep
+            time.sleep(DELAY)
+        if key == 'ArrowUp':
+            x = canvas.get_left_x(snake) 
+            y = canvas.get_top_y(snake) - VELOCITY
+            canvas.moveto(snake, x, y) 
+             # sleep
+            time.sleep(DELAY)
+        if key == 'ArrowDown':
+            x = canvas.get_left_x(snake) 
+            y = canvas.get_top_y(snake) + VELOCITY
+            canvas.moveto(snake, x, y) 
+             # sleep
+            time.sleep(DELAY)
+            
+    # My attempt to use overloapping function to get boolean return but failed
+    #objs = canvas.find_overlapping(canvas.get_left_x(snake),canvas.get_top_y(snake),canvas.get_left_x(snake)+SIZE,canvas.get_top_y(snake)+SIZE)
+        #if objs != None:
+        #else
+        
+    # judge if touch the goal, by left_x and top_y overlapping
+        if canvas.get_left_x(snake) == canvas.get_left_x(goal) and canvas.get_top_y(snake) == canvas.get_top_y(goal) :
+            left_x = 20*random.randint(0, (CANVAS_WIDTH-SIZE)/20)
+            top_y = 20*random.randint(0, (CANVAS_HEIGHT-SIZE)/20)
+            canvas.moveto(goal,left_x, top_y)
+            # sleep
+            time.sleep(DELAY)
+            #adds up points
+            point += 1
+            canvas.delete(text)
+            text = canvas.create_text(40, 360, text='Point: '+str(point))
+            print("point:" + str(point))
+ 
+        
+
+if __name__ == '__main__':
+    main()
